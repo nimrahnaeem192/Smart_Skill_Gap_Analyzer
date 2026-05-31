@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Account — SkillGapAI</title>
+  <link rel="stylesheet" href="../css/styles.css"/>
+</head>
+<body>
+<div class="auth-page">
+
+  <!-- ── Visual Panel ──────────────────────────────────────── -->
+  <div class="auth-visual">
+    <div class="auth-visual-grid"></div>
+    <div class="auth-visual-orb auth-visual-orb-1"></div>
+    <div class="auth-visual-orb auth-visual-orb-2"></div>
+
+    <div class="auth-visual-content">
+      <div class="auth-visual-icon">🚀</div>
+      <h2 class="auth-visual-title">Start your<br/><span style="color:var(--accent)">career journey</span></h2>
+      <p style="color:var(--text-muted);font-size:0.95rem;font-weight:300;max-width:320px;line-height:1.7;margin-top:var(--space-md)">
+        Join thousands of professionals who use SkillGapAI to close skill gaps and land their dream roles.
+      </p>
+
+      <div class="auth-visual-features" style="margin-top:var(--space-xl)">
+        <div class="auth-feature-item">
+          <div class="auth-feature-icon">⚡</div>
+          <div>
+            <div class="auth-feature-title">Instant Analysis</div>
+            <div class="auth-feature-desc">Get your full readiness report in seconds — no waiting.</div>
+          </div>
+        </div>
+        <div class="auth-feature-item">
+          <div class="auth-feature-icon">🎓</div>
+          <div>
+            <div class="auth-feature-title">Free Courses</div>
+            <div class="auth-feature-desc">Every skill gap links to a verified free learning resource.</div>
+          </div>
+        </div>
+        <div class="auth-feature-item">
+          <div class="auth-feature-icon">📄</div>
+          <div>
+            <div class="auth-feature-title">Export PDF Reports</div>
+            <div class="auth-feature-desc">Beautiful PDF reports you can share with mentors or recruiters.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Auth Panel ────────────────────────────────────────── -->
+  <div class="auth-panel">
+    <a href="../index.html" class="auth-back">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M11 7H3M6 4L3 7l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to home
+    </a>
+
+    <div class="auth-header">
+      <h1 class="auth-title">Create account</h1>
+      <p class="auth-subtitle">Free forever. No credit card required.</p>
+    </div>
+
+    <!-- Alert box -->
+    <div id="alertBox" class="alert alert-error hidden" role="alert">
+      <span>⚠</span>
+      <span id="alertMsg">Something went wrong.</span>
+    </div>
+
+    <form class="auth-form" id="registerForm" novalidate>
+
+      <div class="form-group">
+        <label class="form-label" for="name">Full name</label>
+        <input
+          type="text"
+          id="name"
+          class="form-input"
+          placeholder="Jane Smith"
+          autocomplete="name"
+          required
+        />
+        <span class="form-error hidden" id="nameError"></span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email address</label>
+        <input
+          type="email"
+          id="email"
+          class="form-input"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+        />
+        <span class="form-error hidden" id="emailError"></span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <div style="position:relative">
+          <input
+            type="password"
+            id="password"
+            class="form-input"
+            placeholder="Min. 8 chars, 1 uppercase, 1 number"
+            autocomplete="new-password"
+            required
+            style="padding-right:48px"
+          />
+          <button type="button" id="togglePwd"
+            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text-dim);font-size:1.1rem;line-height:1"
+            aria-label="Toggle password visibility">👁</button>
+        </div>
+        <div class="password-strength" id="strengthBars">
+          <div class="strength-bar" id="bar1"></div>
+          <div class="strength-bar" id="bar2"></div>
+          <div class="strength-bar" id="bar3"></div>
+          <div class="strength-bar" id="bar4"></div>
+        </div>
+        <div class="strength-label" id="strengthLabel"></div>
+        <span class="form-error hidden" id="passwordError"></span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="confirmPassword">Confirm password</label>
+        <div style="position:relative">
+          <input
+            type="password"
+            id="confirmPassword"
+            class="form-input"
+            placeholder="Repeat your password"
+            autocomplete="new-password"
+            required
+            style="padding-right:48px"
+          />
+          <button type="button" id="toggleConfirm"
+            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text-dim);font-size:1.1rem;line-height:1"
+            aria-label="Toggle confirm password visibility">👁</button>
+        </div>
+        <span class="form-error hidden" id="confirmError"></span>
+      </div>
+
+      <div style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15);border-radius:var(--radius-md);padding:12px 16px;font-size:0.78rem;color:var(--text-muted);line-height:1.6">
+        By creating an account you agree to our
+        <span style="color:var(--primary-light)">Terms of Service</span> and
+        <span style="color:var(--primary-light)">Privacy Policy</span>.
+      </div>
+
+      <button type="submit" class="btn btn-primary w-full btn-lg" id="submitBtn">
+        <span class="btn-text">Create Account</span>
+      </button>
+
+    </form>
+
+    <div class="auth-footer mt-xl">
+      Already have an account?
+      <a href="login.html">Sign in →</a>
+    </div>
+  </div>
+
+</div>
+
+<script src="../js/auth.js"></script>
+<script>
+  // Redirect if already logged in
+  Auth.redirectIfAuth('dashboard.html');
+
+  const form    = document.getElementById('registerForm');
+  const nameIn  = document.getElementById('name');
+  const emailIn = document.getElementById('email');
+  const pwdIn   = document.getElementById('password');
+  const confIn  = document.getElementById('confirmPassword');
+  const submitBtn  = document.getElementById('submitBtn');
+  const alertBox   = document.getElementById('alertBox');
+  const alertMsg   = document.getElementById('alertMsg');
+
+  // Toggle password visibility
+  document.getElementById('togglePwd').addEventListener('click', () => {
+    const show = pwdIn.type === 'password';
+    pwdIn.type = show ? 'text' : 'password';
+    document.getElementById('togglePwd').textContent = show ? '🙈' : '👁';
+  });
+  document.getElementById('toggleConfirm').addEventListener('click', () => {
+    const show = confIn.type === 'password';
+    confIn.type = show ? 'text' : 'password';
+    document.getElementById('toggleConfirm').textContent = show ? '🙈' : '👁';
+  });
+
+  // Password strength meter
+  function getStrength(pwd) {
+    let score = 0;
+    if (pwd.length >= 8)  score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/[0-9]/.test(pwd)) score++;
+    if (/[^A-Za-z0-9]/.test(pwd)) score++;
+    return score;
+  }
+
+  const bars  = [document.getElementById('bar1'), document.getElementById('bar2'),
+                 document.getElementById('bar3'), document.getElementById('bar4')];
+  const strengthLabel = document.getElementById('strengthLabel');
+  const levels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+  const levelColors = ['', 'active-weak', 'active-weak', 'active-medium', 'active-strong'];
+  const labelColors = ['', '#fb7185', '#fbbf24', '#fbbf24', 'var(--accent-light)'];
+
+  pwdIn.addEventListener('input', () => {
+    const s = getStrength(pwdIn.value);
+    bars.forEach((b, i) => {
+      b.className = 'strength-bar';
+      if (i < s) b.classList.add(levelColors[s]);
+    });
+    strengthLabel.textContent = pwdIn.value ? levels[s] : '';
+    strengthLabel.style.color = labelColors[s];
+  });
+
+  function showAlert(msg) {
+    alertMsg.textContent = msg;
+    alertBox.classList.remove('hidden');
+    alertBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  function hideAlert() { alertBox.classList.add('hidden'); }
+
+  function setErr(input, errEl, msg) {
+    input.classList.add('error');
+    errEl.textContent = msg;
+    errEl.classList.remove('hidden');
+  }
+  function clearErr(input, errEl) {
+    input.classList.remove('error');
+    errEl.classList.add('hidden');
+  }
+
+  function validate() {
+    let ok = true;
+    const nameErr  = document.getElementById('nameError');
+    const emailErr = document.getElementById('emailError');
+    const pwdErr   = document.getElementById('passwordError');
+    const confErr  = document.getElementById('confirmError');
+
+    [nameIn, emailIn, pwdIn, confIn].forEach((inp, i) =>
+      clearErr(inp, [nameErr, emailErr, pwdErr, confErr][i]));
+
+    if (!nameIn.value.trim()) {
+      setErr(nameIn, nameErr, 'Full name is required.'); ok = false;
+    } else if (nameIn.value.trim().length < 2) {
+      setErr(nameIn, nameErr, 'Name must be at least 2 characters.'); ok = false;
+    }
+
+    if (!emailIn.value.trim()) {
+      setErr(emailIn, emailErr, 'Email is required.'); ok = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailIn.value.trim())) {
+      setErr(emailIn, emailErr, 'Please enter a valid email address.'); ok = false;
+    }
+
+    if (!pwdIn.value) {
+      setErr(pwdIn, pwdErr, 'Password is required.'); ok = false;
+    } else if (pwdIn.value.length < 8) {
+      setErr(pwdIn, pwdErr, 'Password must be at least 8 characters.'); ok = false;
+    } else if (!/[A-Z]/.test(pwdIn.value)) {
+      setErr(pwdIn, pwdErr, 'Password must contain at least one uppercase letter.'); ok = false;
+    } else if (!/[0-9]/.test(pwdIn.value)) {
+      setErr(pwdIn, pwdErr, 'Password must contain at least one number.'); ok = false;
+    }
+
+    if (!confIn.value) {
+      setErr(confIn, confErr, 'Please confirm your password.'); ok = false;
+    } else if (confIn.value !== pwdIn.value) {
+      setErr(confIn, confErr, 'Passwords do not match.'); ok = false;
+    }
+
+    return ok;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideAlert();
+    if (!validate()) return;
+
+    submitBtn.classList.add('loading');
+    submitBtn.disabled = true;
+
+    try {
+      await Auth.register(nameIn.value.trim(), emailIn.value.trim(), pwdIn.value);
+      window.location.href = 'analyzer.html';
+    } catch (err) {
+      showAlert(err.message || 'Registration failed. Please try again.');
+    } finally {
+      submitBtn.classList.remove('loading');
+      submitBtn.disabled = false;
+    }
+  });
+
+  // Live confirm match
+  confIn.addEventListener('input', () => {
+    const confErr = document.getElementById('confirmError');
+    if (confIn.value && confIn.value !== pwdIn.value) {
+      setErr(confIn, confErr, 'Passwords do not match.');
+    } else {
+      clearErr(confIn, confErr);
+    }
+  });
+</script>
+</body>
+</html>

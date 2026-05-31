@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign In — SkillGapAI</title>
+  <link rel="stylesheet" href="../css/styles.css"/>
+</head>
+<body>
+<div class="auth-page">
+
+  <!-- ── Visual Panel ──────────────────────────────────────── -->
+  <div class="auth-visual">
+    <div class="auth-visual-grid"></div>
+    <div class="auth-visual-orb auth-visual-orb-1"></div>
+    <div class="auth-visual-orb auth-visual-orb-2"></div>
+
+    <div class="auth-visual-content">
+      <div class="auth-visual-icon">⚡</div>
+      <h2 class="auth-visual-title">SkillGap<span style="color:var(--accent)">AI</span></h2>
+      <p style="color:var(--text-muted);font-size:0.95rem;font-weight:300;max-width:320px;line-height:1.7">
+        Identify your skill gaps, get a personalized roadmap, and accelerate your career.
+      </p>
+
+      <div class="auth-visual-features">
+        <div class="auth-feature-item">
+          <div class="auth-feature-icon">🎯</div>
+          <div>
+            <div class="auth-feature-title">Readiness Score</div>
+            <div class="auth-feature-desc">Get a weighted score showing how ready you are for any role.</div>
+          </div>
+        </div>
+        <div class="auth-feature-item">
+          <div class="auth-feature-icon">🗺️</div>
+          <div>
+            <div class="auth-feature-title">Learning Roadmap</div>
+            <div class="auth-feature-desc">Prioritized list of free courses to close every skill gap fast.</div>
+          </div>
+        </div>
+        <div class="auth-feature-item">
+          <div class="auth-feature-icon">📊</div>
+          <div>
+            <div class="auth-feature-title">Progress Tracking</div>
+            <div class="auth-feature-desc">Track your improvement across multiple analyses over time.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Auth Panel ────────────────────────────────────────── -->
+  <div class="auth-panel">
+    <a href="../index.html" class="auth-back">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M11 7H3M6 4L3 7l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to home
+    </a>
+
+    <div class="auth-header">
+      <h1 class="auth-title">Welcome back</h1>
+      <p class="auth-subtitle">Sign in to your account to continue your analysis.</p>
+    </div>
+
+    <!-- Error alert -->
+    <div id="alertBox" class="alert alert-error hidden" role="alert">
+      <span>⚠</span>
+      <span id="alertMsg">Something went wrong.</span>
+    </div>
+
+    <form class="auth-form" id="loginForm" novalidate>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email address</label>
+        <input
+          type="email"
+          id="email"
+          class="form-input"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+        />
+        <span class="form-error hidden" id="emailError"></span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">
+          Password
+          <a href="#" style="float:right;color:var(--primary-light);font-weight:500;font-size:0.78rem">Forgot password?</a>
+        </label>
+        <div style="position:relative">
+          <input
+            type="password"
+            id="password"
+            class="form-input"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+            style="padding-right:48px"
+          />
+          <button type="button" id="togglePwd"
+            style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text-dim);font-size:1.1rem;line-height:1"
+            aria-label="Toggle password visibility">👁</button>
+        </div>
+        <span class="form-error hidden" id="passwordError"></span>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <label class="checkbox-label">
+          <input type="checkbox" id="rememberMe"/>
+          Remember me for 7 days
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-full btn-lg" id="submitBtn">
+        <span class="btn-text">Sign In</span>
+      </button>
+
+    </form>
+
+    <div class="auth-footer mt-xl">
+      Don't have an account?
+      <a href="register.html">Create one free →</a>
+    </div>
+  </div>
+
+</div>
+
+<script src="../js/auth.js"></script>
+<script>
+  // Redirect if already logged in
+  Auth.redirectIfAuth('dashboard.html');
+
+  const form       = document.getElementById('loginForm');
+  const emailInput = document.getElementById('email');
+  const pwdInput   = document.getElementById('password');
+  const submitBtn  = document.getElementById('submitBtn');
+  const alertBox   = document.getElementById('alertBox');
+  const alertMsg   = document.getElementById('alertMsg');
+  const togglePwd  = document.getElementById('togglePwd');
+
+  // Toggle password visibility
+  togglePwd.addEventListener('click', () => {
+    const isText = pwdInput.type === 'text';
+    pwdInput.type = isText ? 'password' : 'text';
+    togglePwd.textContent = isText ? '👁' : '🙈';
+  });
+
+  function showAlert(msg) {
+    alertMsg.textContent = msg;
+    alertBox.classList.remove('hidden');
+    alertBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  function hideAlert() { alertBox.classList.add('hidden'); }
+
+  function setFieldError(inputEl, errEl, msg) {
+    inputEl.classList.add('error');
+    errEl.textContent = msg;
+    errEl.classList.remove('hidden');
+  }
+  function clearFieldError(inputEl, errEl) {
+    inputEl.classList.remove('error');
+    errEl.classList.add('hidden');
+  }
+
+  function validate() {
+    let ok = true;
+    const emailErr = document.getElementById('emailError');
+    const pwdErr   = document.getElementById('passwordError');
+
+    clearFieldError(emailInput, emailErr);
+    clearFieldError(pwdInput, pwdErr);
+
+    if (!emailInput.value.trim()) {
+      setFieldError(emailInput, emailErr, 'Email is required.');
+      ok = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim())) {
+      setFieldError(emailInput, emailErr, 'Please enter a valid email address.');
+      ok = false;
+    }
+
+    if (!pwdInput.value) {
+      setFieldError(pwdInput, pwdErr, 'Password is required.');
+      ok = false;
+    }
+
+    return ok;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideAlert();
+    if (!validate()) return;
+
+    submitBtn.classList.add('loading');
+    submitBtn.disabled = true;
+
+    try {
+      await Auth.login(emailInput.value.trim(), pwdInput.value);
+      window.location.href = 'dashboard.html';
+    } catch (err) {
+      showAlert(err.message || 'Login failed. Please check your credentials.');
+    } finally {
+      submitBtn.classList.remove('loading');
+      submitBtn.disabled = false;
+    }
+  });
+
+  // Live validation
+  emailInput.addEventListener('blur', () => {
+    const err = document.getElementById('emailError');
+    if (emailInput.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+      setFieldError(emailInput, err, 'Please enter a valid email address.');
+    } else {
+      clearFieldError(emailInput, err);
+    }
+  });
+</script>
+</body>
+</html>

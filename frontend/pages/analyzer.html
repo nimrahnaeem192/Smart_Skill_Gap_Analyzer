@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Skill Analyzer — SkillGapAI</title>
+  <link rel="stylesheet" href="../css/styles.css"/>
+  <link rel="stylesheet" href="../css/dashboard.css"/>
+  <style>
+    /* ── Step Wizard ───────────────────────────────────────── */
+    .wizard-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border-light);
+      padding: var(--space-xl) var(--space-2xl);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .step-progress {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      position: relative;
+    }
+
+    .step-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: calc(50% + 20px);
+      right: calc(-50% + 20px);
+      height: 1px;
+      background: var(--border-light);
+      transition: background 0.4s;
+    }
+
+    .step-item.completed:not(:last-child)::after {
+      background: var(--primary);
+    }
+
+    .step-circle {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.9rem;
+      border: 2px solid var(--border-light);
+      background: var(--surface-2);
+      color: var(--text-dim);
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-item.active .step-circle {
+      border-color: var(--primary);
+      background: rgba(99,102,241,0.15);
+      color: var(--primary-light);
+      box-shadow: 0 0 16px rgba(99,102,241,0.3);
+    }
+
+    .step-item.completed .step-circle {
+      border-color: var(--accent);
+      background: rgba(16,185,129,0.15);
+      color: var(--accent-light);
+    }
+
+    .step-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      font-family: var(--font-display);
+      letter-spacing: 0.04em;
+      color: var(--text-dim);
+      white-space: nowrap;
+      transition: color 0.3s;
+    }
+    .step-item.active  .step-label { color: var(--primary-light); }
+    .step-item.completed .step-label { color: var(--accent-light); }
+
+    /* ── Analyzer Body ─────────────────────────────────────── */
+    .analyzer-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: var(--space-2xl) var(--space-lg);
+    }
+
+    .step-panel { display: none; }
+    .step-panel.active { display: block; animation: fadeInUp 0.35s ease; }
+
+    .step-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+    .step-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: var(--space-xl);
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    /* Role grid */
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: var(--space-md);
+      margin-bottom: var(--space-xl);
+    }
+
+    .role-option {
+      background: var(--surface);
+      border: 2px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      cursor: pointer;
+      transition: all 0.25s;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .role-option::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(99,102,241,0.06), transparent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .role-option:hover {
+      border-color: rgba(99,102,241,0.35);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(99,102,241,0.12);
+    }
+    .role-option:hover::before { opacity: 1; }
+
+    .role-option.selected {
+      border-color: var(--primary);
+      background: rgba(99,102,241,0.07);
+      box-shadow: 0 0 24px rgba(99,102,241,0.2);
+    }
+    .role-option.selected::before { opacity: 1; }
+
+    .role-option-check {
+      position: absolute;
+      top: 12px; right: 12px;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      color: #fff;
+    }
+    .role-option.selected .role-option-check { display: flex; }
+
+    .role-emoji  { font-size: 2.2rem; }
+    .role-name   { font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; }
+    .role-domain { font-size: 0.72rem; color: var(--text-dim); }
+
+    /* Skills form */
+    .skills-section-label {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin: var(--space-xl) 0 var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .skills-section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-light);
+    }
+
+    .skill-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 14px var(--space-lg);
+      margin-bottom: 8px;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .skill-row.row-adequate { border-color: rgba(16,185,129,0.25); }
+    .skill-row.row-weak     { border-color: rgba(245,158,11,0.25); }
+    .skill-row.row-missing  { border-color: var(--border-light); }
+
+    .skill-row-info { flex: 1; min-width: 0; }
+    .skill-row-name {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .skill-row-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .skill-required {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+    }
+    .skill-weight-badge {
+      background: rgba(99,102,241,0.1);
+      color: var(--primary-light);
+      font-size: 0.65rem;
+      font-weight: 700;
+      font-family: var(--font-display);
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(99,102,241,0.15);
+    }
+
+    .skill-row-controls {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      flex-shrink: 0;
+    }
+
+    .slider-wrap {
+      position: relative;
+      width: 160px;
+    }
+
+    .skill-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: linear-gradient(
+        to right,
+        var(--primary) 0%,
+        var(--primary) var(--pct, 0%),
+        var(--surface-3) var(--pct, 0%),
+        var(--surface-3) 100%
+      );
+      outline: none;
+      cursor: pointer;
+      --pct: 0%;
+    }
+
+    .skill-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      border: 2px solid var(--bg);
+      box-shadow: 0 0 8px rgba(99,102,241,0.4);
+      cursor: grab;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .skill-slider::-webkit-slider-thumb:active {
+      transform: scale(1.3);
+      cursor: grabbing;
+    }
+    .skill-slider::-moz-range-thumb {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      border: 2px solid var(--bg);
+      cursor: grab;
+    }
+
+    .level-display {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      min-width: 90px;
+    }
+
+    .level-num {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--text);
+    }
+
+    .level-name {
+      font-size: 0.7rem;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+
+    /* Custom skill */
+    .skill-row-custom .remove-custom-btn {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: rgba(244,63,94,0.1);
+      color: #fb7185;
+      border: 1px solid rgba(244,63,94,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .skill-row-custom .remove-custom-btn:hover {
+      background: rgba(244,63,94,0.2);
+    }
+    .custom-skill-name {
+      padding: 8px 12px;
+      font-size: 0.875rem;
+    }
+
+    /* Add custom skill btn */
+    .add-skill-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px var(--space-lg);
+      background: transparent;
+      border: 1px dashed rgba(99,102,241,0.25);
+      border-radius: var(--radius-md);
+      color: var(--text-dim);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: var(--font-body);
+      margin-top: 8px;
+    }
+    .add-skill-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary-light);
+      background: rgba(99,102,241,0.05);
+    }
+
+    /* Step 3 — Confirm */
+    .confirm-card {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-lg);
+    }
+    .confirm-role-display {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .confirm-emoji { font-size: 2.5rem; }
+    .confirm-role-name {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .confirm-summary {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: var(--space-md);
+    }
+    .confirm-stat {
+      text-align: center;
+      padding: var(--space-md);
+      background: var(--surface-2);
+      border-radius: var(--radius-md);
+    }
+    .confirm-stat-val {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--primary-light);
+    }
+    .confirm-stat-label {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 4px;
+    }
+
+    /* Nav buttons */
+    .wizard-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: var(--space-xl);
+      padding-top: var(--space-lg);
+      border-top: 1px solid var(--border-light);
+    }
+
+    /* Loading overlay */
+    .analyze-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(8,11,20,0.85);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-lg);
+    }
+    .analyze-overlay.visible { display: flex; }
+
+    .analyze-spinner {
+      width: 64px; height: 64px;
+      border: 3px solid rgba(99,102,241,0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .analyze-overlay-text {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .analyze-overlay-sub {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: -8px;
+    }
+
+    @media (max-width: 640px) {
+      .wizard-header { padding: var(--space-lg); }
+      .analyzer-body { padding: var(--space-lg); }
+      .skill-row { flex-wrap: wrap; }
+      .skill-row-controls { width: 100%; }
+      .slider-wrap { flex: 1; }
+      .confirm-summary { grid-template-columns: repeat(3,1fr); }
+      .step-label { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="dashboard-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo-icon">⚡</div>
+      <div class="sidebar-logo-text">
+        SkillGap<span style="color:var(--accent)">AI</span>
+        <div class="sidebar-logo-sub">Career Intelligence</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Menu</div>
+      <a href="dashboard.html" class="sidebar-link">
+        <span class="sidebar-link-icon">📊</span> Dashboard
+      </a>
+      <a href="analyzer.html" class="sidebar-link active">
+        <span class="sidebar-link-icon">🎯</span> Skill Analyzer
+      </a>
+      <a href="history.html" class="sidebar-link">
+        <span class="sidebar-link-icon">📁</span> History
+      </a>
+      <a href="roadmap.html" class="sidebar-link">
+        <span class="sidebar-link-icon">🗺️</span> Roadmap
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebarAvatar">?</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="sidebarName">Loading…</div>
+          <div class="sidebar-user-email" id="sidebarEmail"></div>
+        </div>
+      </div>
+      <button class="sidebar-logout" id="logoutBtn">
+        <span>🚪</span> Sign Out
+      </button>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Main -->
+  <div class="main-content">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:var(--space-md)">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        <span class="topbar-title">🎯 Skill Analyzer</span>
+      </div>
+      <div class="topbar-right">
+        <a href="dashboard.html" class="btn btn-ghost btn-sm">← Dashboard</a>
+      </div>
+    </div>
+
+    <!-- Step progress bar -->
+    <div class="wizard-header">
+      <div class="step-progress">
+        <div class="step-item active" id="stepItem1">
+          <div class="step-circle">1</div>
+          <div class="step-label">Select Role</div>
+        </div>
+        <div class="step-item" id="stepItem2">
+          <div class="step-circle">2</div>
+          <div class="step-label">Rate Skills</div>
+        </div>
+        <div class="step-item" id="stepItem3">
+          <div class="step-circle">3</div>
+          <div class="step-label">Analyze</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="analyzer-body">
+
+      <!-- ── Step 1: Select Role ── -->
+      <div class="step-panel active" id="panel1">
+        <h2 class="step-title">Choose your target role</h2>
+        <p class="step-subtitle">Select the career role you want to analyze your skills against. We'll load all the required skills for that role.</p>
+        <div class="role-grid" id="roleGrid">
+          <!-- populated by JS -->
+          <div style="grid-column:1/-1;text-align:center;padding:var(--space-2xl);color:var(--text-dim)">
+            <div class="analyze-spinner" style="margin:0 auto var(--space-lg)"></div>
+            Loading roles…
+          </div>
+        </div>
+        <div class="wizard-nav">
+          <span></span>
+          <button class="btn btn-primary" id="step1Next" disabled>
+            Continue <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 2: Rate Skills ── -->
+      <div class="step-panel" id="panel2">
+        <h2 class="step-title" id="step2Title">Rate your skills</h2>
+        <p class="step-subtitle">Use the sliders to rate your proficiency from 1 (Novice) to 5 (Expert). Leave at 0 for skills you haven't learned yet.</p>
+
+        <div class="skills-section-label">Required Skills</div>
+        <div id="skillsForm">
+          <!-- populated by JS -->
+        </div>
+
+        <div class="skills-section-label">Additional Skills</div>
+        <div id="customSkillsForm"></div>
+        <button class="add-skill-btn" id="addCustomBtn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Add a custom skill
+        </button>
+
+        <div class="wizard-nav">
+          <button class="btn btn-outline" id="step2Back">← Back</button>
+          <button class="btn btn-primary" id="step2Next">
+            Review & Analyze <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 3: Confirm & Analyze ── -->
+      <div class="step-panel" id="panel3">
+        <h2 class="step-title">Ready to analyze</h2>
+        <p class="step-subtitle">Review your selection and click Analyze to get your full skill-gap report.</p>
+
+        <div class="confirm-card" id="confirmCard">
+          <div class="confirm-role-display">
+            <span class="confirm-emoji" id="confirmEmoji">💻</span>
+            <div>
+              <div class="confirm-role-name" id="confirmRoleName">—</div>
+              <div style="font-size:0.8rem;color:var(--text-dim)" id="confirmDomain">—</div>
+            </div>
+          </div>
+          <div class="confirm-summary">
+            <div class="confirm-stat">
+              <div class="confirm-stat-val" id="confirmTotal">—</div>
+              <div class="confirm-stat-label">Total Skills</div>
+            </div>
+            <div class="confirm-stat">
+              <div class="confirm-stat-val" id="confirmRated" style="color:var(--accent-light)">—</div>
+              <div class="confirm-stat-label">Skills Rated</div>
+            </div>
+            <div class="confirm-stat">
+              <div class="confirm-stat-val" id="confirmUnrated" style="color:#fb7185">—</div>
+              <div class="confirm-stat-label">Not Rated</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="alertBox" class="alert alert-error hidden">
+          <span>⚠</span><span id="alertMsg"></span>
+        </div>
+
+        <div class="wizard-nav">
+          <button class="btn btn-outline" id="step3Back">← Back</button>
+          <button class="btn btn-primary btn-lg" id="analyzeBtn">
+            <span class="btn-text">⚡ Run Analysis</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Loading overlay -->
+<div class="analyze-overlay" id="analyzeOverlay">
+  <div class="analyze-spinner"></div>
+  <div class="analyze-overlay-text">Analyzing your skills…</div>
+  <div class="analyze-overlay-sub">Running weighted gap analysis across all skills</div>
+</div>
+
+<script src="../js/auth.js"></script>
+<script src="../js/analyzer.js"></script>
+<script>
+  Auth.requireAuth();
+
+  // Populate sidebar
+  document.getElementById('sidebarName').textContent  = Auth.getUserName() || 'User';
+  document.getElementById('sidebarEmail').textContent = Auth.getUserEmail() || '';
+  const initials = (Auth.getUserName() || 'U').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('sidebarAvatar').textContent = initials;
+  document.getElementById('logoutBtn').addEventListener('click', Auth.logout);
+
+  // Mobile sidebar
+  const sidebar  = document.getElementById('sidebar');
+  const overlay  = document.getElementById('sidebarOverlay');
+  document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('visible');
+  });
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('visible');
+  });
+
+  // ── State ────────────────────────────────────────────────────
+  let selectedRole   = null;
+  let rolesData      = [];
+  let requiredSkills = [];
+  let currentStep    = 1;
+
+  // ── Step navigation ──────────────────────────────────────────
+  function goToStep(n) {
+    document.querySelectorAll('.step-panel').forEach((p,i) => {
+      p.classList.toggle('active', i+1 === n);
+    });
+    ['stepItem1','stepItem2','stepItem3'].forEach((id, i) => {
+      const el = document.getElementById(id);
+      el.classList.remove('active','completed');
+      if (i+1 === n) el.classList.add('active');
+      if (i+1 < n)   el.classList.add('completed');
+    });
+    currentStep = n;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── Load roles ───────────────────────────────────────────────
+  async function loadRoles() {
+    try {
+      rolesData = await Analyzer.fetchRoles();
+      const grid = document.getElementById('roleGrid');
+      grid.innerHTML = '';
+      rolesData.forEach(role => {
+        const emoji = Analyzer.ROLE_EMOJI[role.role_name] || '💼';
+        const card  = document.createElement('div');
+        card.className = 'role-option';
+        card.dataset.roleId = role.role_id;
+        card.innerHTML = `
+          <div class="role-option-check">✓</div>
+          <div class="role-emoji">${emoji}</div>
+          <div class="role-name">${role.role_name}</div>
+          <div class="role-domain">${role.domain}</div>
+        `;
+        card.addEventListener('click', () => selectRole(role, card));
+        grid.appendChild(card);
+      });
+    } catch (err) {
+      document.getElementById('roleGrid').innerHTML =
+        `<div class="alert alert-error" style="grid-column:1/-1"><span>⚠</span><span>Failed to load roles: ${err.message}</span></div>`;
+    }
+  }
+
+  function selectRole(role, card) {
+    document.querySelectorAll('.role-option').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedRole = role;
+    document.getElementById('step1Next').disabled = false;
+  }
+
+  // ── Step 1 → 2 ───────────────────────────────────────────────
+  document.getElementById('step1Next').addEventListener('click', async () => {
+    if (!selectedRole) return;
+    try {
+      const data      = await Analyzer.fetchSkillsForRole(selectedRole.role_id);
+      requiredSkills  = data.skills;
+      const container = document.getElementById('skillsForm');
+      Analyzer.buildSkillForm(requiredSkills, container);
+      document.getElementById('step2Title').textContent =
+        `Rate your ${selectedRole.role_name} skills`;
+      goToStep(2);
+    } catch (err) {
+      alert('Failed to load skills: ' + err.message);
+    }
+  });
+
+  // ── Custom skill ─────────────────────────────────────────────
+  document.getElementById('addCustomBtn').addEventListener('click', () => {
+    Analyzer.addCustomSkillRow(document.getElementById('customSkillsForm'));
+  });
+
+  // ── Step 2 nav ───────────────────────────────────────────────
+  document.getElementById('step2Back').addEventListener('click', () => goToStep(1));
+
+  document.getElementById('step2Next').addEventListener('click', () => {
+    const allSkills = Analyzer.collectSkillInputs(document.getElementById('skillsForm'));
+    const custSkills= Analyzer.collectSkillInputs(document.getElementById('customSkillsForm'));
+    const allRated  = [...allSkills, ...custSkills];
+
+    const emoji = Analyzer.ROLE_EMOJI[selectedRole.role_name] || '💼';
+    document.getElementById('confirmEmoji').textContent    = emoji;
+    document.getElementById('confirmRoleName').textContent = selectedRole.role_name;
+    document.getElementById('confirmDomain').textContent   = selectedRole.domain;
+
+    const totalRequired = requiredSkills.length;
+    const rated         = allSkills.length + custSkills.length;
+    document.getElementById('confirmTotal').textContent   = totalRequired;
+    document.getElementById('confirmRated').textContent   = rated;
+    document.getElementById('confirmUnrated').textContent = totalRequired - allSkills.length;
+
+    goToStep(3);
+  });
+
+  // ── Step 3 nav & analyze ─────────────────────────────────────
+  document.getElementById('step3Back').addEventListener('click', () => goToStep(2));
+
+  document.getElementById('analyzeBtn').addEventListener('click', async () => {
+    const alertBox = document.getElementById('alertBox');
+    alertBox.classList.add('hidden');
+
+    const allSkills  = Analyzer.collectSkillInputs(document.getElementById('skillsForm'));
+    const custSkills = Analyzer.collectSkillInputs(document.getElementById('customSkillsForm'));
+    const combined   = [...allSkills, ...custSkills];
+
+    if (combined.length === 0) {
+      alertBox.classList.remove('hidden');
+      document.getElementById('alertMsg').textContent =
+        'Please rate at least one skill before analyzing.';
+      return;
+    }
+
+    document.getElementById('analyzeOverlay').classList.add('visible');
+    document.getElementById('analyzeBtn').disabled = true;
+
+    try {
+      const result = await Analyzer.submitAnalysis(selectedRole.role_id, combined);
+      // Store for result.html
+      Analyzer.saveAnalysisResult({
+        ...result,
+        _meta: { role_id: selectedRole.role_id, user_skills: combined },
+      });
+      sessionStorage.removeItem('savedResultId'); // clear any previous saved ID
+      window.location.href = 'result.html';
+    } catch (err) {
+      document.getElementById('analyzeOverlay').classList.remove('visible');
+      document.getElementById('analyzeBtn').disabled = false;
+      alertBox.classList.remove('hidden');
+      document.getElementById('alertMsg').textContent = err.message;
+    }
+  });
+
+  loadRoles();
+</script>
+</body>
+</html>

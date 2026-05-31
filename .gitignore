@@ -1,0 +1,29 @@
+# ── Dependencies ──────────────────────────────────────────────
+node_modules/
+
+# ── Environment ────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Database ───────────────────────────────────────────────────
+database/skillgap.db
+database/skillgap.db-shm
+database/skillgap.db-wal
+
+# ── Logs ───────────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+
+# ── PDF exports ────────────────────────────────────────────────
+*.pdf
+
+# ── OS / editor ────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ── Puppeteer cache ────────────────────────────────────────────
+.cache/

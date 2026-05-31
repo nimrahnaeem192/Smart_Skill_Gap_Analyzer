@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Skill-Gap Analyzer — Know Your Gaps. Build Your Future.</title>
+  <meta name="description" content="Identify skill gaps, get personalized learning roadmaps, and accelerate your career with AI-powered analysis."/>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+
+<!-- ── Navbar ──────────────────────────────────────────────── -->
+<nav class="navbar" id="navbar">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-icon">⚡</div>
+    <span>SkillGap<span style="color:var(--accent)">AI</span></span>
+  </a>
+  <div class="nav-links" id="navLinks">
+    <a href="#features" class="nav-link">Features</a>
+    <a href="#how-it-works" class="nav-link">How It Works</a>
+    <a href="pages/login.html" class="nav-link">Login</a>
+    <a href="pages/register.html" class="btn btn-primary btn-sm">Get Started</a>
+  </div>
+  <div class="nav-hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ── Hero ────────────────────────────────────────────────── -->
+<section class="hero" id="hero">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+  </div>
+
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="hero-eyebrow-dot"></span>
+        Career Intelligence Platform
+      </div>
+
+      <h1 class="hero-title">
+        Smart<br/>
+        <span class="hero-title-gradient">Skill-Gap</span><br/>
+        Analyzer
+      </h1>
+
+      <p class="hero-tagline">
+        Know your gaps. Build your future.<br/>
+        Map your skills against any career role, uncover what's holding you back, and get a precise roadmap to get there.
+      </p>
+
+      <div class="hero-cta">
+        <a href="pages/register.html" class="btn btn-primary btn-lg">
+          Get Started Free
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#how-it-works" class="btn btn-outline btn-lg">
+          See How It Works
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-value">5</div>
+          <div class="hero-stat-label">Career Roles</div>
+        </div>
+        <div>
+          <div class="hero-stat-value">50+</div>
+          <div class="hero-stat-label">Skills Mapped</div>
+        </div>
+        <div>
+          <div class="hero-stat-value">100%</div>
+          <div class="hero-stat-label">Free Resources</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Features ────────────────────────────────────────────── -->
+<section class="section" id="features" style="background:var(--bg-2);">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">What We Offer</div>
+      <h2 class="section-title">Everything you need to<br/>close the gap</h2>
+      <p class="section-subtitle">From skill assessment to personalized learning paths — all in one place.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card reveal">
+        <div class="feature-icon feature-icon-1">🎯</div>
+        <div class="feature-title">Precise Skill Analysis</div>
+        <p class="feature-desc">Rate your proficiency across every skill required for your target role using our weighted 1–5 scoring system. Know exactly where you stand.</p>
+      </div>
+      <div class="card reveal" style="animation-delay:0.1s">
+        <div class="feature-icon feature-icon-2">🔍</div>
+        <div class="feature-title">Gap Detection</div>
+        <p class="feature-desc">Our algorithm identifies missing skills, weak areas, and your strengths — giving you a clear picture of your readiness score out of 100.</p>
+      </div>
+      <div class="card reveal" style="animation-delay:0.2s">
+        <div class="feature-icon feature-icon-3">🗺️</div>
+        <div class="feature-title">Personalized Roadmap</div>
+        <p class="feature-desc">Get a prioritized learning roadmap with free course resources for every gap — ordered by impact so you improve your score fastest.</p>
+      </div>
+    </div>
+
+    <!-- Extra feature row -->
+    <div class="grid-3" style="margin-top:var(--space-lg)">
+      <div class="card card-sm reveal" style="animation-delay:0.05s">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <span style="font-size:1.4rem">📊</span>
+          <span class="feature-title" style="margin:0;font-size:1rem">Progress Dashboard</span>
+        </div>
+        <p class="feature-desc">Track all past analyses, compare scores over time, and see your improvement across roles.</p>
+      </div>
+      <div class="card card-sm reveal" style="animation-delay:0.15s">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <span style="font-size:1.4rem">📄</span>
+          <span class="feature-title" style="margin:0;font-size:1rem">PDF Reports</span>
+        </div>
+        <p class="feature-desc">Export your full analysis as a beautiful PDF report — share it with mentors or keep it for reference.</p>
+      </div>
+      <div class="card card-sm reveal" style="animation-delay:0.25s">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <span style="font-size:1.4rem">🔐</span>
+          <span class="feature-title" style="margin:0;font-size:1rem">Secure & Private</span>
+        </div>
+        <p class="feature-desc">JWT-authenticated accounts keep your skill data safe. Your results are only visible to you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── How It Works ─────────────────────────────────────────── -->
+<section class="section" id="how-it-works">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Simple Process</div>
+      <h2 class="section-title">Get your gap analysis<br/>in 3 easy steps</h2>
+      <p class="section-subtitle">No complex setup. Just select, enter, and discover.</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="step-number">1</div>
+        <div class="step-title">Select Your Target Role</div>
+        <p class="step-desc">Choose from Software Engineer, Data Scientist, UI/UX Designer, Cybersecurity Analyst, or Project Manager.</p>
+      </div>
+      <div class="step-card reveal" style="animation-delay:0.15s">
+        <div class="step-number">2</div>
+        <div class="step-title">Rate Your Skills</div>
+        <p class="step-desc">For each required skill, select your proficiency level from 1 (beginner) to 5 (expert). Leave blank for skills you don't have yet.</p>
+      </div>
+      <div class="step-card reveal" style="animation-delay:0.3s">
+        <div class="step-number">3</div>
+        <div class="step-title">Get Your Results</div>
+        <p class="step-desc">Instantly see your readiness score, missing & weak skills, strong areas, and a prioritized list of free courses to close every gap.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Roles Showcase ───────────────────────────────────────── -->
+<section class="section" style="background:var(--bg-2);">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Career Roles</div>
+      <h2 class="section-title">Five in-demand roles,<br/>fully mapped</h2>
+    </div>
+
+    <div class="grid-3" style="grid-template-columns:repeat(5,1fr);gap:var(--space-md)">
+      <div class="card card-sm reveal" style="text-align:center;padding:var(--space-lg) var(--space-md)">
+        <div style="font-size:2.2rem;margin-bottom:10px">💻</div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:0.88rem;margin-bottom:4px">Software Engineer</div>
+        <div style="font-size:0.72rem;color:var(--text-dim)">Engineering</div>
+      </div>
+      <div class="card card-sm reveal" style="text-align:center;padding:var(--space-lg) var(--space-md);animation-delay:0.08s">
+        <div style="font-size:2.2rem;margin-bottom:10px">🧠</div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:0.88rem;margin-bottom:4px">Data Scientist</div>
+        <div style="font-size:0.72rem;color:var(--text-dim)">Data & AI</div>
+      </div>
+      <div class="card card-sm reveal" style="text-align:center;padding:var(--space-lg) var(--space-md);animation-delay:0.16s">
+        <div style="font-size:2.2rem;margin-bottom:10px">🎨</div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:0.88rem;margin-bottom:4px">UI/UX Designer</div>
+        <div style="font-size:0.72rem;color:var(--text-dim)">Design</div>
+      </div>
+      <div class="card card-sm reveal" style="text-align:center;padding:var(--space-lg) var(--space-md);animation-delay:0.24s">
+        <div style="font-size:2.2rem;margin-bottom:10px">🛡️</div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:0.88rem;margin-bottom:4px">Cybersecurity</div>
+        <div style="font-size:0.72rem;color:var(--text-dim)">Security</div>
+      </div>
+      <div class="card card-sm reveal" style="text-align:center;padding:var(--space-lg) var(--space-md);animation-delay:0.32s">
+        <div style="font-size:2.2rem;margin-bottom:10px">📋</div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:0.88rem;margin-bottom:4px">Project Manager</div>
+        <div style="font-size:0.72rem;color:var(--text-dim)">Management</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ──────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="cta-banner reveal">
+      <div class="section-tag">Start Today</div>
+      <h2 class="section-title" style="margin-bottom:var(--space-md)">Ready to know where you stand?</h2>
+      <p class="section-subtitle" style="margin-bottom:var(--space-xl)">
+        Create a free account and run your first skill-gap analysis in under 3 minutes.
+      </p>
+      <div style="display:flex;gap:var(--space-md);justify-content:center;flex-wrap:wrap">
+        <a href="pages/register.html" class="btn btn-primary btn-lg">Create Free Account</a>
+        <a href="pages/login.html" class="btn btn-outline btn-lg">Sign In</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo" style="margin-bottom:0">
+          <div class="nav-logo-icon">⚡</div>
+          <span>SkillGap<span style="color:var(--accent)">AI</span></span>
+        </div>
+        <p>Know your gaps. Build your future. The smartest way to accelerate your career with data-driven skill analysis.</p>
+      </div>
+      <div>
+        <div class="footer-heading">Platform</div>
+        <div class="footer-links">
+          <a href="pages/register.html" class="footer-link">Get Started</a>
+          <a href="pages/login.html" class="footer-link">Sign In</a>
+          <a href="#features" class="footer-link">Features</a>
+          <a href="#how-it-works" class="footer-link">How It Works</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-heading">Roles</div>
+        <div class="footer-links">
+          <a href="pages/register.html" class="footer-link">Software Engineer</a>
+          <a href="pages/register.html" class="footer-link">Data Scientist</a>
+          <a href="pages/register.html" class="footer-link">UI/UX Designer</a>
+          <a href="pages/register.html" class="footer-link">Cybersecurity</a>
+          <a href="pages/register.html" class="footer-link">Project Manager</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2024 SkillGapAI. Built with ⚡ and better-sqlite3.</span>
+      <span class="footer-copy">Vanilla JS · Node.js · Express</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── Navbar scroll effect
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  // ── Mobile hamburger
+  const hamburger = document.getElementById('hamburger');
+  const navLinks  = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+  });
+
+  // ── Scroll reveal
+  const observer = new IntersectionObserver(
+    entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+    { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+  );
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — SkillGapAI</title>
+  <link rel="stylesheet" href="../css/styles.css"/>
+  <link rel="stylesheet" href="../css/dashboard.css"/>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="dashboard-layout">
+
+  <!-- ════════════════════════════════════════════
+       SIDEBAR
+  ════════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo-icon">⚡</div>
+      <div class="sidebar-logo-text">
+        SkillGap<span style="color:var(--accent)">AI</span>
+        <div class="sidebar-logo-sub">Career Intelligence</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Main</div>
+      <a href="dashboard.html" class="sidebar-link active">
+        <span class="sidebar-link-icon">📊</span> Dashboard
+      </a>
+      <a href="analyzer.html" class="sidebar-link">
+        <span class="sidebar-link-icon">🎯</span> New Analysis
+      </a>
+      <a href="roadmap.html" class="sidebar-link">
+        <span class="sidebar-link-icon">🗺️</span> Roadmap
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:8px">History</div>
+      <a href="history.html" class="sidebar-link">
+        <span class="sidebar-link-icon">📁</span> All Results
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebarAvatar">?</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name"  id="sidebarName">Loading…</div>
+          <div class="sidebar-user-email" id="sidebarEmail"></div>
+        </div>
+      </div>
+      <button class="sidebar-logout" id="logoutBtn">
+        <span>🚪</span> Sign Out
+      </button>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ════════════════════════════════════════════
+       MAIN CONTENT
+  ════════════════════════════════════════════ -->
+  <div class="main-content">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:var(--space-md)">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        <span class="topbar-title">📊 Dashboard</span>
+      </div>
+      <div class="topbar-right">
+        <a href="analyzer.html" class="btn btn-primary btn-sm">
+          + New Analysis
+        </a>
+      </div>
+    </div>
+
+    <!-- Page body -->
+    <div class="page-content">
+
+      <!-- Error banner -->
+      <div id="dashErrorBanner"></div>
+
+      <!-- Welcome banner -->
+      <div class="welcome-banner">
+        <div class="welcome-text">
+          <div class="welcome-greeting" id="welcomeGreeting">Welcome back! 👋</div>
+          <div class="welcome-sub">Here's an overview of your skill analysis progress.</div>
+        </div>
+        <a href="analyzer.html" class="btn btn-primary btn-sm" style="flex-shrink:0;position:relative;z-index:1">
+          ⚡ Run Analysis
+        </a>
+      </div>
+
+      <!-- Quick action cards -->
+      <div class="quick-actions">
+        <a href="analyzer.html" class="quick-action-card">
+          <div class="quick-action-icon qa-icon-primary">🎯</div>
+          <div>
+            <div class="quick-action-title">Analyze Skills</div>
+            <div class="quick-action-sub">Start a new gap analysis</div>
+          </div>
+        </a>
+        <a href="roadmap.html" class="quick-action-card">
+          <div class="quick-action-icon qa-icon-accent">🗺️</div>
+          <div>
+            <div class="quick-action-title">View Roadmap</div>
+            <div class="quick-action-sub">Track learning progress</div>
+          </div>
+        </a>
+        <a href="history.html" class="quick-action-card">
+          <div class="quick-action-icon qa-icon-warning">📁</div>
+          <div>
+            <div class="quick-action-title">Analysis History</div>
+            <div class="quick-action-sub">Browse past results</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- ── Main grid ──────────────────────────────────────── -->
+      <div class="dash-grid">
+
+        <!-- ── LEFT COLUMN ──────────────────────────────────── -->
+
+        <!-- Profile card -->
+        <div class="dash-card col-left">
+          <div class="dash-card-header">
+            <span class="dash-card-title">👤 Profile</span>
+          </div>
+          <div id="profileSection">
+            <div class="profile-card-inner">
+              <!-- Skeleton -->
+              <div class="skeleton skeleton-avatar"></div>
+              <div class="skeleton skeleton-text w-1\/2" style="margin:0 auto 8px"></div>
+              <div class="skeleton skeleton-text w-3\/4" style="margin:0 auto 24px"></div>
+              <div class="skeleton skeleton-card" style="width:100%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Latest result card -->
+        <div class="dash-card col-left" style="margin-top:0">
+          <div class="dash-card-header">
+            <span class="dash-card-title">🏆 Latest Result</span>
+            <a href="analyzer.html" style="font-size:0.78rem;color:var(--primary-light)">New →</a>
+          </div>
+          <div class="dash-card-body" style="padding:var(--space-lg) var(--space-xl)">
+            <div id="latestResultSection">
+              <div class="skeleton skeleton-text w-3\/4"></div>
+              <div class="skeleton skeleton-text w-1\/2"></div>
+              <div class="skeleton skeleton-card" style="height:60px;margin-top:12px"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── RIGHT COLUMN ─────────────────────────────────── -->
+
+        <!-- Score history bar chart -->
+        <div class="dash-card col-right">
+          <div class="dash-card-header">
+            <span class="dash-card-title">📈 Score History</span>
+            <span style="font-size:0.75rem;color:var(--text-dim)">Last 5 analyses</span>
+          </div>
+          <div class="chart-wrap">
+            <div id="barChartWrap" class="bar-canvas-wrap">
+              <canvas id="barChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Radar chart -->
+        <div class="dash-card col-right">
+          <div class="dash-card-header">
+            <span class="dash-card-title">🕸️ Skill Radar</span>
+            <span style="font-size:0.75rem;color:var(--text-dim)" id="radarRoleName">Latest analysis</span>
+          </div>
+          <div class="chart-wrap">
+            <div id="radarChartWrap" class="radar-canvas-wrap">
+              <canvas id="radarChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── FULL WIDTH ────────────────────────────────────── -->
+
+        <!-- Skill gap table -->
+        <div class="dash-card col-full">
+          <div class="dash-card-header">
+            <span class="dash-card-title">🔍 Skill Gap Breakdown</span>
+            <span style="font-size:0.75rem;color:var(--text-dim)">From latest analysis</span>
+          </div>
+          <div class="gap-table-wrap">
+            <table class="gap-table">
+              <thead>
+                <tr>
+                  <th>Skill</th>
+                  <th>Your Level</th>
+                  <th>Required</th>
+                  <th>Gap</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="gapTableBody">
+                <tr>
+                  <td colspan="5" class="table-empty">
+                    <div class="skeleton skeleton-text" style="max-width:300px;margin:0 auto"></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- History list -->
+        <div class="dash-card col-full">
+          <div class="dash-card-header">
+            <span class="dash-card-title">📁 Recent Analyses</span>
+            <a href="history.html" style="font-size:0.78rem;color:var(--primary-light)">View all →</a>
+          </div>
+          <div style="padding: var(--space-md) 0;">
+            <div class="history-list" id="historyList">
+              <!-- skeleton rows -->
+              <div style="padding:12px 24px">
+                <div class="skeleton skeleton-text w-3\/4"></div>
+                <div class="skeleton skeleton-text w-1\/2"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /dash-grid -->
+
+    </div><!-- /page-content -->
+  </div><!-- /main-content -->
+</div><!-- /dashboard-layout -->
+
+<script src="../js/auth.js"></script>
+<script src="../js/charts.js"></script>
+<script src="../js/dashboard.js"></script>
+<script>
+  // Personalized greeting
+  function setGreeting() {
+    const hour = new Date().getHours();
+    const name = Auth.getUserName()?.split(' ')[0] || 'there';
+    const greet =
+      hour < 12 ? `Good morning, ${name}! ☀️` :
+      hour < 17 ? `Good afternoon, ${name}! 👋` :
+                  `Good evening, ${name}! 🌙`;
+    const el = document.getElementById('welcomeGreeting');
+    if (el) el.textContent = greet;
+  }
+  setGreeting();
+
+  // Override populateProfile to also set greeting name
+  const _origLoad = window.Dashboard?.loadDashboard;
+</script>
+</body>
+</html>
