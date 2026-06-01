@@ -1,7 +1,7 @@
 // frontend/js/dashboard.js
 'use strict';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://smart-skill-gap-analyzer.up.railway.app/api';
 
 const LEVEL_NAMES  = ['', 'Novice', 'Basic', 'Intermediate', 'Proficient', 'Expert'];
 const ROLE_EMOJI   = {
