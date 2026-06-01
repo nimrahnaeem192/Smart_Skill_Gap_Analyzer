@@ -2,7 +2,6 @@
 'use strict';
 
 const path     = require('path');
-const Database = require('better-sqlite3');
 const logger   = require('../services/logger');
 
 const DB_PATH = path.resolve(__dirname, '../../database/skillgap.db');
