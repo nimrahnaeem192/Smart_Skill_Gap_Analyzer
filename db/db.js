@@ -1,22 +1,16 @@
-// backend/db/db.js
-'use strict';
+const { Pool } = require('pg');
 
-const path     = require('path');
-const logger   = require('../services/logger');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
 
-const DB_PATH = path.resolve(__dirname, '../../database/skillgap.db');
+pool.connect((err) => {
+  if (err) {
+    console.error('Failed to connect to database:', err.message);
+  } else {
+    console.log('Database connected successfully!');
+  }
+});
 
-let db;
-
-try {
-  db = new Database(DB_PATH);
-  db.pragma('journal_mode = WAL');
-  db.pragma('foreign_keys = ON');
-  db.pragma('synchronous = NORMAL');
-  logger.info(`Database connected: ${DB_PATH}`);
-} catch (err) {
-  logger.error(`Failed to connect to database: ${err.message}`);
-  process.exit(1);
-}
-
-module.exports = db;
+module.exports = pool;
